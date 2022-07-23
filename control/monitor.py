@@ -10,6 +10,70 @@ from django.conf import settings
 
 client = mqtt.Client(settings.MQTT_USER_PUB)
 
+   
+
+#def analyze_data_new():
+
+#    print("Calculando nuevas alertas...")
+
+#    dataUnaHora = Data.objects.filter(
+#        base_time__gte=datetime.now() - timedelta(hours=1))
+#    aggregationUnaHora = dataUnaHora.annotate(check_value=Avg('avg_value')) \
+#        .select_related('station', 'measurement') \
+#        .select_related('station__user', 'station__location') \
+#        .select_related('station__location__city', 'station__location__state',
+#                        'station__location__country') \
+#        .values('check_value', 'station__user__username',
+#                'measurement__name',
+#                'measurement__max_value',
+#                'measurement__min_value',
+#                'station__location__city__name',
+#                'station__location__state__name',
+#                'station__location__country__name')
+
+#    dataDosHoras = Data.objects.filter(
+#        base_time__gte=datetime.now() - timedelta(hours=2)).exclude(base_time__gte=datetime.now() - timedelta(hours=1))
+#    aggregationDosHoras = dataDosHoras.annotate(check_value=Avg('avg_value')) \
+#        .select_related('station', 'measurement') \
+#        .select_related('station__user', 'station__location') \
+#        .select_related('station__location__city', 'station__location__state',
+#                        'station__location__country') \
+#        .values('check_value', 'station__user__username',
+#                'measurement__name',
+#                'measurement__max_value',
+#                'measurement__min_value',
+#                'station__location__city__name',
+#                'station__location__state__name',
+#                'station__location__country__name')
+    
+#    alerts = 0
+#    for itemUnaHora in aggregationUnaHora:
+#        alert = False
+#        for itemDosHoras in aggregationDosHoras:
+#            if itemUnaHora["measurement__name"] == itemDosHoras["measurement__name"]:
+#                variable = itemUnaHora["measurement__name"]
+#                valueUnaHora = itemUnaHora["check_value"] or 0
+#                valueDosHoras = itemDosHoras["check_value"] or 0
+
+#                country = itemUnaHora['station__location__country__name']
+#                state = itemUnaHora['station__location__state__name']
+#                city = itemUnaHora['station__location__city__name']
+#                user = itemUnaHora['station__user__username']
+                
+#                if valueUnaHora > valueDosHoras:
+#                    alert = True
+
+#                if alert:
+#                    message = "ALERT NEW {} {} {}".format(variable, valueUnaHora, valueDosHoras)
+#                    topic = '{}/{}/{}/{}/in'.format(country, state, city, user)
+#                    print(datetime.now(), "Sending alert to {} {}".format(topic, variable))
+#                    client.publish(topic, message)
+#                    alerts += 1
+
+#    print(len(aggregationUnaHora), "dispositivos revisados")
+#    print(alerts, "alertas enviadas")
+
+
 
 def analyze_data():
     # Consulta todos los datos de la última hora, los agrupa por estación y variable
@@ -57,6 +121,8 @@ def analyze_data():
 
     print(len(aggregation), "dispositivos revisados")
     print(alerts, "alertas enviadas")
+    #analyze_data_new()
+
 
 
 def on_connect(client, userdata, flags, rc):
